@@ -1,7 +1,10 @@
 {
-  "dependencies": {
-    "express": "^4.18.1",
-    "mongoose": "^6.6.5",
-    "node": "^18.10.0"
-  }
+	"dependencies": {
+		"express": "^4.18.1",
+		"mongoose": "^6.6.5",
+		"node": "^18.10.0"
+	},
+	"scripts": {
+		"start": "node server.js"
+	}
 }
