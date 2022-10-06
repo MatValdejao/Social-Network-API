@@ -1,4 +1,4 @@
-const { User, Thought } = require("../models");
+const { User } = require("../models");
 
 const userController = {
 	// get user
@@ -14,7 +14,7 @@ const userController = {
 	// get user by id value
 	getUserById({ params }, res) {
 		User.findOne({
-			_id: params._id,
+			_id: params.id,
 		})
 			.then((dbUserData) => {
 				if (!dbUserData) {
@@ -31,7 +31,7 @@ const userController = {
 
 	// add user
 	addUser({ body }, res) {
-		User.create({ body })
+		User.create(body)
 			.then((dbUserData) => res.json(dbUserData))
 			.catch((err) => {
 				console.log(err);
@@ -43,7 +43,7 @@ const userController = {
 	updateUser({ params, body }, res) {
 		User.findOneAndUpdate(
 			{
-				_id: params._id,
+				_id: params.id,
 			},
 			body,
 			{
@@ -67,7 +67,7 @@ const userController = {
 	// delete user by id
 	deleteUser({ params }, res) {
 		User.findOneAndDelete({
-			_id: params._id,
+			_id: params.id,
 		})
 			.then((dbUserData) => {
 				if (!dbUserData) {

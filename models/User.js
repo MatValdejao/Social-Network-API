@@ -6,13 +6,13 @@ const UserSchema = new Schema(
 		username: {
 			type: String,
 			unique: true,
-			require: true,
+			required: true,
 			trim: true,
 		},
 		email: {
 			type: String,
 			unique: true,
-			require: true,
+			required: true,
 			match: /^([a-z0-9_\.-]+)@([\da-z\.-]+)\.([a-z\.]{2,6})$/,
 		},
 		thoughts: {
@@ -33,9 +33,9 @@ const UserSchema = new Schema(
 );
 
 // create friendCount counter virtual
-UserSchema.virtual("friendCount").get(function () {
-	return this.friends.length;
-});
+// UserSchema.virtual("friendCount").get(function () {
+// 	return this.friends.length;
+// });
 
 // create model
 const User = model("User", UserSchema)
