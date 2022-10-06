@@ -1,6 +1,6 @@
 const { Schema, Types } = require("mongoose");
 
-const userSchema = new Schema(
+const UserSchema = new Schema(
 	{
 		userId: {
 			type: Schema.Types.ObjectId,
@@ -34,3 +34,7 @@ const userSchema = new Schema(
 		id: false,
 	}
 );
+
+UserSchema.virtual("friendCount").get(function () {
+	return this.friends.length;
+});
