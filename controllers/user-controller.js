@@ -57,17 +57,17 @@ const userController = {
 			});
 	},
 
-	addFriend({ params, body }, res) {
+	// add a friend
+	addFriend({ params }, res) {
 		User.findOneAndUpdate(
 			{
 				_id: params.userId,
 			},
 			{
-				$push: { friends: body },
+				$push: { friends: params.friendId },
 			},
 			{
 				new: true,
-				runValidators: true,
 			}
 		)
 			.then((dbData) => {
@@ -105,6 +105,32 @@ const userController = {
 			.catch((err) => {
 				console.log(err);
 				res.status(400).json(err);
+			});
+	},
+
+	// delete a friend
+	deleteFriend({ params }, res) {
+		User.findOneAndUpdate(
+			{
+				_id: params.userId,
+			},
+			{
+				$pull: { friends: params.friendId },
+			},
+			{
+				new: true,
+			}
+		)
+			.then((dbData) => {
+				if (!dbData) {
+					res.status(404).json({ message: "Please provide valid users!" });
+					return;
+				}
+				res.json(dbData);
+			})
+			.catch((err) => {
+				console.log(err);
+				res.json(err);
 			});
 	},
 
