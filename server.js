@@ -9,7 +9,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(require("./routes"));
 
 mongoose.connect(
-	process.env.MONGODB_URI || "mongodb://127.0.0.1:27017/social-network-db",
+	process.env.MONGODB_URI || "mongodb://127.0.0.1:27017/db-social-network",
 	{
 		useNewUrlParser: true,
 		useUnifiedTopology: true,
