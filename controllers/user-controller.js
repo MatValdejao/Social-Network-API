@@ -1,4 +1,4 @@
-const { User } = require("../models");
+const { User, Thought } = require("../models");
 
 const userController = {
 	// get user
@@ -70,6 +70,7 @@ const userController = {
 				new: true,
 			}
 		)
+			.select("-__v")
 			.then((dbData) => {
 				if (!dbData) {
 					res.status(404).json({ message: "Please provide valid users" });
@@ -95,6 +96,7 @@ const userController = {
 				runValidators: true,
 			}
 		)
+			.select("-__v")
 			.then((dbUserData) => {
 				if (!dbUserData) {
 					res.status(404).json({ message: "No user with that Id!" });
@@ -121,6 +123,7 @@ const userController = {
 				new: true,
 			}
 		)
+			.select("-__v")
 			.then((dbData) => {
 				if (!dbData) {
 					res.status(404).json({ message: "Please provide valid users!" });
@@ -135,15 +138,20 @@ const userController = {
 	},
 
 	// delete user by id
-	deleteUser({ params }, res) {
+    deleteUser({ params, body }, res) {
 		User.findOneAndDelete({
 			_id: params.id,
 		})
-			.then((dbUserData) => {
+			.select("-__v")
+			.then(async (dbUserData) => {
 				if (!dbUserData) {
 					res.json(404).json({ message: "No user with that Id!" });
 					return;
-				}
+                }
+                const thoughts = await Thought.remove({
+                    username: dbUserData.username
+                })
+                console.log(thoughts)
 				res.json(dbUserData);
 			})
 			.catch((err) => {

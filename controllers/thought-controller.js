@@ -63,8 +63,9 @@ const thoughtsController = {
 		Thought.create(body)
 			.then(({ _id }) => {
 				return User.findOneAndUpdate(
-					{
-						userId: body.userId,
+                    {
+                        // username has to be unique, so can use as checker
+						username: body.username,
 					},
 					{
 						$push: { thoughts: _id },
@@ -74,7 +75,8 @@ const thoughtsController = {
 						runValidators: true,
 					}
 				);
-			})
+            })
+            .select("-__v")
 			.then((dbUserData) => {
 				if (!dbUserData) {
 					res.status(404).json({ message: "No user found with this Id!" });
@@ -100,6 +102,7 @@ const thoughtsController = {
 				runValidators: true,
 			}
 		)
+			.select("-__v")
 			.then((dbThoughtData) => {
 				if (!dbThoughtData) {
 					res.status(404).json({ message: "No thought with that Id!" });
@@ -126,6 +129,7 @@ const thoughtsController = {
 				new: true,
 			}
 		)
+			.select("-__v")
 			.then((deleteReaction) => {
 				if (!deleteReaction) {
 					res.status(404).json({ message: "No thought with that Id!" });
@@ -139,9 +143,9 @@ const thoughtsController = {
 	},
 
 	// delete thought
-	deleteThought({ params }, res) {
+	deleteThought({ params: {thoughtId} }, res) {
 		Thought.findOneAndDelete({
-			_id: params.thoughtId,
+			_id: thoughtId,
 		})
 			.then((dbThoughtData) => {
 				if (!dbThoughtData) {
@@ -150,21 +154,23 @@ const thoughtsController = {
 				}
 				return User.findOneAndUpdate(
 					{
-						_id: params.userId,
+						thoughts: thoughtId,
 					},
 					{
-						$pull: { thoughts: params.id },
+						$pull: { thoughts: thoughtId },
 					},
 					{
 						new: true,
 					}
-				).then((dbUserData) => {
-					if (!dbUserData) {
-						res.status(404).json({ message: "No user with that Id!" });
-						return;
-					}
-					res.json(dbUserData);
-				});
+				)
+					.select("-__v")
+					.then((dbUserData) => {
+						if (!dbUserData) {
+							res.status(404).json({ message: "No user with that Id!" });
+							return;
+						}
+						res.json(dbUserData);
+					});
 			})
 			.catch((err) => {
 				console.log(err);
